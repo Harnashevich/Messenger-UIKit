@@ -1,0 +1,6 @@
+framework module Pods_MessengerUIKit2024 {
+  umbrella header "Pods-MessengerUIKit2024-umbrella.h"
+
+  export *
+  module * { export * }
+}
