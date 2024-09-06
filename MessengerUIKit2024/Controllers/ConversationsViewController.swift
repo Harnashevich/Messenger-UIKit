@@ -16,7 +16,6 @@ class ConversationsViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         let isLoggedIn = UserDefaults.standard.bool(forKey: "logged_in")
-        
         if !isLoggedIn {
             let vc = LoginViewController()
             let nav = UINavigationController(rootViewController: vc)
