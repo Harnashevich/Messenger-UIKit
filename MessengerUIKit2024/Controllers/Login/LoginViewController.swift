@@ -150,7 +150,7 @@ extension LoginViewController {
                 print("Failed to log in user with email: \(email)")
                 return
             }
-            
+             
             let user = result.user
             print("Logged In User: \(user)")
         }
