@@ -194,50 +194,83 @@ class RegisterViewController: UIViewController {
     }
     
     @objc private func registerButtonTapped() {
-        emailField.resignFirstResponder()
-        passwordField.resignFirstResponder()
         
-        guard let firstName = firstNameField.text,
-              let lastName = lastNameField.text,
-              let email = emailField.text,
+        emailField.resignFirstResponder()
+        firstNameField.resignFirstResponder()
+        lastNameField.resignFirstResponder()
+        passwordField.resignFirstResponder()
+        guard let email = emailField.text,
               let password = passwordField.text,
+              let firstName = firstNameField.text,
+              let lastName = lastNameField.text,
+              !email.isEmpty,
               !firstName.isEmpty,
               !lastName.isEmpty,
-              !email.isEmpty,
               !password.isEmpty,
               password.count >= 6 else {
-            alertUserLoginError()
+            alertUserError()
             return
         }
+        spinner.show(in: view)
         
-//        spinner.show(in: view)
+        //FireBase Login
         
-        // Firebase Log In
-        
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-            guard let result = authResult, error == nil else {
-                print("Error creating user")
+        DatabaseManager.shared.userExists(with: email) {[weak self] exists in
+            
+            guard let strongSelf = self else{
+                return
+            }
+            DispatchQueue.main.async {
+                strongSelf.spinner.dismiss()
+            }
+            guard !exists else{
+                //user exists
+                
+                strongSelf.alertUserError(message: "a user account for this email already exists")
+                
                 return
             }
             
-            let user = result.user
-            print("Created User: \(user)")
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                guard let strongSelf = self else{
+                    return
+                }
+                guard authResult != nil , error == nil else{
+                    print("something occured \(error!)")
+                    return
+                }
+                
+                let chatUser = ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email)
+                DatabaseManager.shared.insertUser(with: chatUser , completion: { success in
+                    if success{
+                        guard let image = strongSelf.imageView.image, let data = image.pngData() else {
+                            return
+                        }
+                        
+                        let fileName = chatUser.profilePictureFileName
+                        
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName) { result in
+                            switch result {
+                            case .success(let downloadUrl):
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                print(downloadUrl)
+                            case .failure(let error):
+                                print("Storage manager error \(error)")
+                            }
+                        }
+                    }
+                    
+                })
+                
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            }
         }
     }
     
-    func alertUserLoginError(message: String = "Please enter all information to create a new account") {
-        let alert = UIAlertController(
-            title: "Woops",
-            message: message,
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(
-            title: "Dismiss",
-            style: .cancel, handler: nil)
-        )
-        
-        present (alert, animated: true)
+    func alertUserError(message : String = "Please fill out the info properly"){
+        let alert = UIAlertController(title: "Woopsie", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        present(alert,animated: true)
     }
     
     @objc private func didTapRegister() {
