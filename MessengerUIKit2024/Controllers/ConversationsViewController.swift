@@ -72,7 +72,7 @@ extension ConversationsViewController {
     }
     
     @objc private func didTapComposeButton() {
-        let vc = NewConversationViewController()
+        let vc = NewConversationsViewController()
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
     }

@@ -17,7 +17,7 @@ final class StorageManager{
     public typealias UploadPictureCompletion = (Result <String , Error>) -> Void
     
     public func uploadProfilePicture(with data : Data ,fileName : String ,completion : @escaping UploadPictureCompletion){
-        storage.child("images/\(fileName)").putData(data, metadata: nil,completion: { metadata , error in
+        storage.child("images/\(fileName)").putData(data, metadata: nil, completion: { metadata , error in
             guard error == nil else{
                 print("Failed to upload data to firebase for picture")
                 completion(.failure(StorageErrors.failedToUpload))
@@ -48,14 +48,10 @@ final class StorageManager{
     }
     
     
-    public func uploadMessagePhoto(with data : Data ,fileName : String ,completion : @escaping UploadPictureCompletion){
-        
-        
+    public func uploadMessagePhoto(with data : Data ,fileName : String ,completion : @escaping UploadPictureCompletion) {
         storage.child("message_images/\(fileName)").putData(data, metadata: nil,completion: {[weak self] metadata , error in
-            guard error == nil else{
-                
+            guard error == nil else {
                 print("Failed to upload data to firebase for picture")
-                
                 completion(.failure(StorageErrors.failedToUpload))
                 return
             }
@@ -69,7 +65,6 @@ final class StorageManager{
                 }
                 
                 let urlString = url.absoluteString
-                
                 print("download url returned \(urlString)")
                 completion(.success(urlString))
             })
@@ -78,7 +73,6 @@ final class StorageManager{
     
     public func uploadMessageVideo(with fileUrl : URL ,fileName : String ,completion : @escaping UploadPictureCompletion){
         storage.child("message_videos/\(fileName)").putFile(from : fileUrl, metadata: nil,completion: { [weak self] metadata , error in
-            
             guard error == nil else{
                 print("Failed to upload data to firebase for video")
                 completion(.failure(StorageErrors.failedToUpload))
@@ -96,14 +90,12 @@ final class StorageManager{
                 print("download url returned \(urlString)")
                 completion(.success(urlString))
             })
-            
-        } )
+        })
     }
     
-    public enum StorageErrors : Error {
+    public enum StorageErrors: Error {
         case failedToUpload
         case failedToGetDownloadUrl
-        
     }
 }
 

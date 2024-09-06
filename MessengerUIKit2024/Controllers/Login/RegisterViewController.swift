@@ -232,7 +232,7 @@ class RegisterViewController: UIViewController {
             }
             
             FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-                guard let strongSelf = self else{
+                guard let self else{
                     return
                 }
                 guard authResult != nil , error == nil else{
@@ -243,7 +243,7 @@ class RegisterViewController: UIViewController {
                 let chatUser = ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email)
                 DatabaseManager.shared.insertUser(with: chatUser , completion: { success in
                     if success{
-                        guard let image = strongSelf.imageView.image, let data = image.pngData() else {
+                        guard let image = self.imageView.image, let data = image.pngData() else {
                             return
                         }
                         
@@ -262,7 +262,7 @@ class RegisterViewController: UIViewController {
                     
                 })
                 
-                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+                self.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
     }

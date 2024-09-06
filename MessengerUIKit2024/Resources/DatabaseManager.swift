@@ -15,13 +15,23 @@ final class DatabaseManager{
     static let shared = DatabaseManager()
     
     private let database = Database.database().reference()
+    
+    static func safeEmail(emailAddress : String) -> String{
+        var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
+        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
+        
+        return safeEmail
+    }
+    
+    public enum DatabaseError : Error {
+        case failedToFetch
+    }
 }
 
 extension DatabaseManager {
     
     public func userExists(with email : String, completion : @escaping((Bool)->Void)){
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-        
         database.child(safeEmail).observeSingleEvent(of: .value) { snapshot in
             guard snapshot.exists() else {
                 completion(false)
@@ -57,7 +67,7 @@ extension DatabaseManager {
                     
                     usersCollection.append(contentsOf: newElement)
                     print(usersCollection)
-                    self.database.child("users").setValue(usersCollection,withCompletionBlock: { error , _ in
+                    self.database.child("users").setValue(usersCollection, withCompletionBlock: { error , _ in
                         
                         guard error == nil else {
                             completion(false)
@@ -88,10 +98,23 @@ extension DatabaseManager {
         })
     }
     
-    static func safeEmail(emailAddress : String) -> String{
-        var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
-        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
-        
-        return safeEmail
+    public func getDataFor(path : String ,  completion : @escaping (Result<Any,Error>) -> Void){
+        self.database.child("\(path)").observeSingleEvent(of: .value) { snapshot in
+            guard let value = snapshot.value else{
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            completion(.success(value))
+        }
+    }
+    
+    public func getAllUsers (completion : @escaping (Result <[[String : String]], Error>) -> Void){
+        database.child("users").observeSingleEvent(of: .value) { snapshot in
+            guard let value = snapshot.value as? [[String : String]] else{
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            completion(.success(value))
+        }
     }
 }
