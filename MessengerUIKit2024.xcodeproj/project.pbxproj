@@ -32,6 +32,7 @@
 		9F6CCAF42C89D23400BFC51A /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CCAF32C89D23400BFC51A /* VideoPlayerViewController.swift */; };
 		9F6CCAF62C89D25600BFC51A /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CCAF52C89D25600BFC51A /* NewConversationViewController.swift */; };
 		9F6CCAF82C89D26800BFC51A /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CCAF72C89D26800BFC51A /* ProfileViewController.swift */; };
+		9FBE7A542C8F0132000BE211 /* Notification + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBE7A532C8F0132000BE211 /* Notification + Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		9F6CCAF32C89D23400BFC51A /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		9F6CCAF52C89D25600BFC51A /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		9F6CCAF72C89D26800BFC51A /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		9FBE7A532C8F0132000BE211 /* Notification + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification + Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 			children = (
 				9F5ADE672C8B016400403BF8 /* UIView + Extensions.swift */,
 				9F5ADE692C8B025300403BF8 /* UITextField + Extensions.swift */,
+				9FBE7A532C8F0132000BE211 /* Notification + Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 			files = (
 				9F61FD2B2C8B189200BBC0AC /* ChatAppUser.swift in Sources */,
 				9F5ADE682C8B016400403BF8 /* UIView + Extensions.swift in Sources */,
+				9FBE7A542C8F0132000BE211 /* Notification + Extensions.swift in Sources */,
 				9F61FD3B2C8B343B00BBC0AC /* SearchResult.swift in Sources */,
 				9F6CCAEE2C89D20500BFC51A /* LoginViewController.swift in Sources */,
 				9F61FD372C8B2FD600BBC0AC /* Message.swift in Sources */,

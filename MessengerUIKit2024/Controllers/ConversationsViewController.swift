@@ -31,6 +31,8 @@ class ConversationsViewController: UIViewController {
         label.isHidden = true
         return label
     }()
+    
+    private var loginObserver:NSObjectProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,11 +40,20 @@ class ConversationsViewController: UIViewController {
         view.backgroundColor = .white
         setupTableView()
         view.addSubviews(tableView, noConversationsLabel)
+        startListeningForConversations()
+        
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main)
+        { [weak self] _  in
+            guard let strongSelf = self else {return}
+            strongSelf.startListeningForConversations()
+            
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         validateAuth()
         fetchConversations()
+        startListeningForConversations()
     }
     
     override func viewDidLayoutSubviews() {
@@ -52,6 +63,35 @@ class ConversationsViewController: UIViewController {
 }
 
 extension ConversationsViewController {
+    
+    private func startListeningForConversations(){
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else{
+            return
+        }
+        if let observer = loginObserver{
+            NotificationCenter.default.removeObserver(observer)
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        
+        DatabaseManager.shared.getAllConversations(for: safeEmail) { [weak self] result in
+            
+            switch result {
+            case .success(let conversations):
+                guard !conversations.isEmpty else{
+                    return
+                }
+                self?.conversations = conversations
+                
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            
+            case .failure(let error):
+                print("Failed to get convos \(error)")
+            }
+        }
+        
+    }
     
     private func validateAuth() {
         if FirebaseAuth.Auth.auth().currentUser == nil {
@@ -71,8 +111,43 @@ extension ConversationsViewController {
         tableView.isHidden = false
     }
     
+    private func createNewConversation(result : SearchResult) {
+        
+        let name = result.name
+        let email = DatabaseManager.safeEmail(emailAddress: result.email)
+        
+//        DatabaseManager.shared.conversationExists(with: email) { [weak self] result in
+//            guard let self else{ return }
+//            switch result{
+//            case .success(let conversationId):
+//                let vc = ChatViewController(with: email/*,id: conversationId*/)
+//                vc.isNewConversation = false
+//                vc.title = name
+//                vc.navigationItem.largeTitleDisplayMode = .never
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            case .failure(let error):
+//                print("error occured due to \(error)")
+//                let vc = ChatViewController(with: email/*,id: nil*/)
+//                vc.isNewConversation = true
+//                vc.title = name
+//                vc.navigationItem.largeTitleDisplayMode = .never
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+//        }
+        
+        let vc = ChatViewController(with: email, id: nil)
+        vc.isNewConversation = true
+        vc.title = name
+        vc.navigationItem.largeTitleDisplayMode = .never
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc private func didTapComposeButton() {
         let vc = NewConversationsViewController()
+        vc.completion = { [weak self] result in
+            print("\(result)")
+            self?.createNewConversation(result: result)
+        }
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
     }
@@ -81,31 +156,26 @@ extension ConversationsViewController {
 extension ConversationsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return conversations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.identifier, for: indexPath) as! ConversationTableViewCell
-        
-//        let model = conversations[indexPath.row]
-       
-//        cell.configure(with: model)
+        let model = conversations[indexPath.row]
+        cell.configure(with: model)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
+        let model = conversations[indexPath.row]
+        openConversation(model)
         
-        let vc = ChatViewController()
-        vc.title = "Jenny Smith"
-        vc.navigationItem.largeTitleDisplayMode = .never 
+        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
+        vc.title =  model.otherUserEmail
+        vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
-        
-//        let model = conversations[indexPath.row]
-//        openConversation(model)
-        
     }
     
     func openConversation(_ model: Conversation){

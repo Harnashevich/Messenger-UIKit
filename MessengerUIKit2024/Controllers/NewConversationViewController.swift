@@ -163,14 +163,10 @@ extension NewConversationsViewController :  UITableViewDelegate,UITableViewDataS
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        //start convo here
-        
         let targetUserData = results[indexPath.row]
-        
-        dismiss(animated: true, completion: { [weak self] in
-            
+        dismiss(animated: true) { [weak self] in
             self?.completion?(targetUserData)
-        })
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
