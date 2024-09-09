@@ -109,8 +109,7 @@ class ChatViewController: MessagesViewController {
     private func createMessageId() -> String? {
         
         //date , otherUserEmail , SenderMail , randomInt
-        
-        
+    
         guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String else {
             return nil
         }
