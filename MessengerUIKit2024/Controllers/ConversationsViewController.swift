@@ -16,7 +16,7 @@ class ConversationsViewController: UIViewController {
     private var conversations = [Conversation]()
     
     private let tableView : UITableView = {
-        let table = UITableView()
+        let table = UITableView(frame: CGRect(), style: .insetGrouped)
         table.isHidden = true
         table.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.identifier)
         return table
@@ -112,13 +112,12 @@ extension ConversationsViewController {
     }
     
     private func createNewConversation(result : SearchResult) {
-        
         let name = result.name
         let email = DatabaseManager.safeEmail(emailAddress: result.email)
         
         DatabaseManager.shared.conversationExists(with: email) { [weak self] result in
             guard let self else{ return }
-            switch result{
+            switch result {
             case .success(let conversationId):
                 let vc = ChatViewController(with: email,id: conversationId)
                 vc.isNewConversation = false
@@ -138,12 +137,28 @@ extension ConversationsViewController {
     
     @objc private func didTapComposeButton() {
         let vc = NewConversationsViewController()
+        
         vc.completion = { [weak self] result in
+            guard let self else { return }
+            let currentConversations = self.conversations
+            
+            if let targetConversation = currentConversations.first(where:{
+                $0.otherUserEmail == DatabaseManager.safeEmail(emailAddress: result.email)
+            }){
+                let vc = ChatViewController(with: targetConversation.otherUserEmail,id: targetConversation.id)
+                vc.isNewConversation = false
+                vc.title = targetConversation.name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                self.navigationController?.pushViewController(vc, animated: true)
+            } else {
+                self.createNewConversation(result: result)
+            }
             print("\(result)")
-            self?.createNewConversation(result: result)
+            
+            
         }
         let navVC = UINavigationController(rootViewController: vc)
-        present(navVC, animated: true)
+        present(navVC,animated: true)
     }
 }
 
@@ -190,26 +205,18 @@ extension ConversationsViewController : UITableViewDelegate, UITableViewDataSour
        }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete{
-//            
-//            let conversationId = conversations[indexPath.row].id
-//            tableView.beginUpdates()
-//            DatabaseManager.shared.deleteConversation(conversationId: conversationId) { [weak self] success in
-//                
-//                if success{
-//                    self?.conversations.remove(at: indexPath.row)
-//                    tableView.deleteRows(at: [indexPath], with: .left)
-//                }
-//                else{
-//                    
-//                }
-//                
-//            }
-//            
-//            
-//            
-//            tableView.endUpdates()
-//            
-//        }
+        if editingStyle == .delete{
+            
+            let conversationId = conversations[indexPath.row].id
+            tableView.beginUpdates()
+            DatabaseManager.shared.deleteConversation(conversationId: conversationId) { [weak self] success in
+                if success{
+                    self?.conversations.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .left)
+                }
+            }
+            tableView.endUpdates()
+            
+        }
     }
 }

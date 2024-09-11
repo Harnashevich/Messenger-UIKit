@@ -39,7 +39,7 @@ class LoginViewController: UIViewController {
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
-        field.setRightPaddingPoints(150)
+        field.setRightPaddingPoints(20)
         field.setLeftPaddingPoints(20)
         return field
     }()
@@ -57,7 +57,7 @@ class LoginViewController: UIViewController {
         field.leftViewMode = .always
         field.backgroundColor = .white
         field.isSecureTextEntry = true
-        field.setRightPaddingPoints(150)
+        field.setRightPaddingPoints(20)
         field.setLeftPaddingPoints(20)
         return field
     }()
@@ -72,9 +72,18 @@ class LoginViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         return button
     }()
+    
+    private var loginObserver : NSObjectProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main)
+        { [weak self] _  in
+            guard let self else {return}
+            self.navigationController?.dismiss(animated: true, completion: nil)
+            
+        }
+        
         title = "Log In"
         view.backgroundColor = .white
         
