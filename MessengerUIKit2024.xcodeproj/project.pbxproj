@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8E50ED59DD21AC8E56C2CF1B /* Pods_MessengerUIKit2024.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26F25FA394D7F48C57501450 /* Pods_MessengerUIKit2024.framework */; };
+		9F5470172C92E78E0085B53B /* LocationPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5470162C92E78E0085B53B /* LocationPickerViewController.swift */; };
+		9F5470192C92EE860085B53B /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5470182C92EE860085B53B /* ProfileTableViewCell.swift */; };
+		9F54701B2C92EF330085B53B /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54701A2C92EF330085B53B /* ProfileViewModel.swift */; };
 		9F5ADE682C8B016400403BF8 /* UIView + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5ADE672C8B016400403BF8 /* UIView + Extensions.swift */; };
 		9F5ADE6A2C8B025300403BF8 /* UITextField + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5ADE692C8B025300403BF8 /* UITextField + Extensions.swift */; };
 		9F5ADE6C2C8B079800403BF8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9F5ADE6B2C8B079800403BF8 /* GoogleService-Info.plist */; };
@@ -39,6 +42,9 @@
 		26F25FA394D7F48C57501450 /* Pods_MessengerUIKit2024.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessengerUIKit2024.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B8F5F30C9F49B4E39939FA4 /* Pods-MessengerUIKit2024.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessengerUIKit2024.debug.xcconfig"; path = "Target Support Files/Pods-MessengerUIKit2024/Pods-MessengerUIKit2024.debug.xcconfig"; sourceTree = "<group>"; };
 		91B06F1CCA60ACD8C6BCF025 /* Pods-MessengerUIKit2024.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessengerUIKit2024.release.xcconfig"; path = "Target Support Files/Pods-MessengerUIKit2024/Pods-MessengerUIKit2024.release.xcconfig"; sourceTree = "<group>"; };
+		9F5470162C92E78E0085B53B /* LocationPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPickerViewController.swift; sourceTree = "<group>"; };
+		9F5470182C92EE860085B53B /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
+		9F54701A2C92EF330085B53B /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		9F5ADE672C8B016400403BF8 /* UIView + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extensions.swift"; sourceTree = "<group>"; };
 		9F5ADE692C8B025300403BF8 /* UITextField + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField + Extensions.swift"; sourceTree = "<group>"; };
 		9F5ADE6B2C8B079800403BF8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -141,6 +147,7 @@
 				9F6CCAF52C89D25600BFC51A /* NewConversationViewController.swift */,
 				9F6CCAF72C89D26800BFC51A /* ProfileViewController.swift */,
 				9F61FD342C8B2D6700BBC0AC /* ChatViewController.swift */,
+				9F5470162C92E78E0085B53B /* LocationPickerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -151,6 +158,7 @@
 				9F6CCAEC2C89CF6200BFC51A /* Storyboards */,
 				9F61FD2E2C8B2A8500BBC0AC /* ConversationTableViewCell.swift */,
 				9F61FD382C8B341600BBC0AC /* NewConversationCell.swift */,
+				9F5470182C92EE860085B53B /* ProfileTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -169,6 +177,7 @@
 		9F6CCAEA2C89CEE000BFC51A /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				9F54701A2C92EF330085B53B /* ProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -330,9 +339,12 @@
 			files = (
 				9F61FD2B2C8B189200BBC0AC /* ChatAppUser.swift in Sources */,
 				9F5ADE682C8B016400403BF8 /* UIView + Extensions.swift in Sources */,
+				9F5470192C92EE860085B53B /* ProfileTableViewCell.swift in Sources */,
 				9FBE7A542C8F0132000BE211 /* Notification + Extensions.swift in Sources */,
 				9F61FD3B2C8B343B00BBC0AC /* SearchResult.swift in Sources */,
 				9F6CCAEE2C89D20500BFC51A /* LoginViewController.swift in Sources */,
+				9F54701B2C92EF330085B53B /* ProfileViewModel.swift in Sources */,
+				9F5470172C92E78E0085B53B /* LocationPickerViewController.swift in Sources */,
 				9F61FD372C8B2FD600BBC0AC /* Message.swift in Sources */,
 				9F61FD2D2C8B1A9C00BBC0AC /* StorageManager.swift in Sources */,
 				9F5ADE6A2C8B025300403BF8 /* UITextField + Extensions.swift in Sources */,
