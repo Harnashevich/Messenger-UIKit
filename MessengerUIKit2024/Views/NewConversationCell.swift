@@ -12,7 +12,7 @@ class NewConversationCell: UITableViewCell {
     
     static let identifier = "NewConversationCell"
     
-    private let userImageView : UIImageView = {
+    private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 35
@@ -20,7 +20,7 @@ class NewConversationCell: UITableViewCell {
         return imageView
     }()
     
-    private let userNameLabel : UILabel = {
+    private let userNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 21, weight: .semibold)
         return label
@@ -68,8 +68,5 @@ class NewConversationCell: UITableViewCell {
                 print("failed to get image url \(error)")
             }
         }
-        
     }
-
 }
-

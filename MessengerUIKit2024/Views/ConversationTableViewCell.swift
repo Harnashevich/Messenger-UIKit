@@ -12,7 +12,7 @@ class ConversationTableViewCell: UITableViewCell {
     
     static let identifier = "ConversationTableViewCell"
     
-    private let userImageView : UIImageView = {
+    private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 50
@@ -20,23 +20,23 @@ class ConversationTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private let userNameLabel : UILabel = {
+    private let userNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 21, weight: .semibold)
         return label
         
     }()
     
-    private let userMessageLabel : UILabel = {
+    private let userMessageLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .regular)
         label.numberOfLines = 0
         return label
         
     }()
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style : style , reuseIdentifier : reuseIdentifier)
+        super.init(style: style , reuseIdentifier : reuseIdentifier)
         contentView.addSubviews(
             userImageView,
             userNameLabel,
@@ -87,13 +87,9 @@ class ConversationTableViewCell: UITableViewCell {
                 DispatchQueue.main.async {
                     self?.userImageView.sd_setImage(with: url, completed: nil)
                 }
-                
             case .failure(let error):
                 print("failed to get image url \(error)")
             }
         }
-        
     }
-
 }
-

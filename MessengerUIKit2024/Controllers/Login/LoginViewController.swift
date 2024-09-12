@@ -9,18 +9,18 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
-    private let scrollView : UIScrollView = {
+    private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.clipsToBounds = true
         scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     
-    private let imageView : UIImageView = {
+    private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "logo")
         imageView.contentMode = .scaleAspectFit
@@ -73,17 +73,15 @@ class LoginViewController: UIViewController {
         return button
     }()
     
-    private var loginObserver : NSObjectProtocol?
-
+    private var loginObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main)
-        { [weak self] _  in
-            guard let self else {return}
-            self.navigationController?.dismiss(animated: true, completion: nil)
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main) { [weak self] _  in
+            guard let self else { return }
+            self.navigationController?.dismiss(animated: true)
             
         }
-        
         title = "Log In"
         view.backgroundColor = .systemBackground
         
@@ -152,7 +150,8 @@ extension LoginViewController {
         guard let email = emailField.text,
               let password = passwordField.text,
               !email.isEmpty, !password.isEmpty,
-              password.count >= 6 else {
+              password.count >= 6 
+        else {
             alertUserLoginError()
             return
         }
@@ -170,19 +169,17 @@ extension LoginViewController {
                 print("Failed to log in user with email: \(email)")
                 return
             }
-             
+            
             let user = result.user
             let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
             
             DatabaseManager.shared.getDataFor(path: safeEmail) {  result in
-                
-                switch result{
-                    
+                switch result {
                 case .success(let data):
                     guard let userData = data as? [String : Any],
-                        let firstName = userData["first_name"] as? String,
-                        let lastName = userData["last_name"] as? String else {
-                            return
+                          let firstName = userData["first_name"] as? String,
+                          let lastName = userData["last_name"] as? String else {
+                        return
                     }
                     UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
                     
@@ -214,7 +211,7 @@ extension LoginViewController {
     }
 }
 
-extension LoginViewController : UITextFieldDelegate {
+extension LoginViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == emailField{

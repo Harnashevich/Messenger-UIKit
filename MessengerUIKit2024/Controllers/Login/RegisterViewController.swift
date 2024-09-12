@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-class RegisterViewController: UIViewController {
+final class RegisterViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
@@ -186,7 +186,8 @@ class RegisterViewController: UIViewController {
             x: 30,
             y: passwordField.bottom + 10,
             width: scrollView.width - 60,
-            height: 52)
+            height: 52
+        )
     }
     
     @objc private func didTapChangeProfilePic() {
@@ -194,20 +195,21 @@ class RegisterViewController: UIViewController {
     }
     
     @objc private func registerButtonTapped() {
-        
         emailField.resignFirstResponder()
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
         passwordField.resignFirstResponder()
-        guard let email = emailField.text,
-              let password = passwordField.text,
-              let firstName = firstNameField.text,
-              let lastName = lastNameField.text,
-              !email.isEmpty,
-              !firstName.isEmpty,
-              !lastName.isEmpty,
-              !password.isEmpty,
-              password.count >= 6 else {
+        guard
+            let email = emailField.text,
+            let password = passwordField.text,
+            let firstName = firstNameField.text,
+            let lastName = lastNameField.text,
+            !email.isEmpty,
+            !firstName.isEmpty,
+            !lastName.isEmpty,
+            !password.isEmpty,
+            password.count >= 6
+        else {
             alertUserError()
             return
         }
@@ -215,23 +217,18 @@ class RegisterViewController: UIViewController {
         
         //FireBase Login
         
-        DatabaseManager.shared.userExists(with: email) {[weak self] exists in
-            
-            guard let strongSelf = self else{
-                return
-            }
+        DatabaseManager.shared.userExists(with: email) { [weak self] exists in
+            guard let self else { return }
             DispatchQueue.main.async {
-                strongSelf.spinner.dismiss()
+                self.spinner.dismiss()
             }
             guard !exists else{
                 //user exists
-                
-                strongSelf.alertUserError(message: "a user account for this email already exists")
-                
+                self.alertUserError(message: "a user account for this email already exists")
                 return
             }
             
-            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) {  [weak self] authResult, error in
                 guard let self else{
                     return
                 }
@@ -240,10 +237,16 @@ class RegisterViewController: UIViewController {
                     return
                 }
                 
+                UserDefaults.standard.setValue(email, forKey: "email")
+                UserDefaults.standard.setValue("\(firstName) \(lastName)", forKey: "name")
+                
                 let chatUser = ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email)
                 DatabaseManager.shared.insertUser(with: chatUser , completion: { success in
                     if success{
-                        guard let image = self.imageView.image, let data = image.pngData() else {
+                        guard
+                            let image = self.imageView.image,
+                            let data = image.pngData()
+                        else {
                             return
                         }
                         
@@ -261,7 +264,6 @@ class RegisterViewController: UIViewController {
                     }
                     
                 })
-                
                 self.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
@@ -289,6 +291,7 @@ extension RegisterViewController: UITextFieldDelegate {
         else if textField == passwordField {
             registerButtonTapped ()
         }
+        
         return true
     }
 }

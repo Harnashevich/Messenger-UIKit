@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-class ConversationsViewController: UIViewController {
+final class ConversationsViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
@@ -23,7 +23,7 @@ class ConversationsViewController: UIViewController {
     }()
     
     private let noConversationsLabel : UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.text = "No Conversations"
         label.textAlignment = .center
         label.textColor = .gray
@@ -33,32 +33,35 @@ class ConversationsViewController: UIViewController {
     }()
     
     private var loginObserver:NSObjectProtocol?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(didTapComposeButton))
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupTableView()
         view.addSubviews(tableView, noConversationsLabel)
         startListeningForConversations()
         
-        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main)
-        { [weak self] _  in
-            guard let strongSelf = self else {return}
-            strongSelf.startListeningForConversations()
-            
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification,object: nil,queue: .main) { [weak self] _  in
+            guard let self else {return}
+            self.startListeningForConversations()
         }
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         validateAuth()
-        fetchConversations()
         startListeningForConversations()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        noConversationsLabel.frame = CGRect(
+            x: 10,
+            y: (view.height - 100)/2,
+            width: view.width - 20,
+            height: 100
+        )
     }
 }
 
@@ -74,23 +77,27 @@ extension ConversationsViewController {
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         
         DatabaseManager.shared.getAllConversations(for: safeEmail) { [weak self] result in
-            
             switch result {
             case .success(let conversations):
-                guard !conversations.isEmpty else{
+                guard !conversations.isEmpty else {
+                    self?.tableView.isHidden = true
+                    self?.noConversationsLabel.isHidden = false
                     return
                 }
+                self?.tableView.isHidden = false
+                self?.noConversationsLabel.isHidden = true
                 self?.conversations = conversations
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
-            
+                
             case .failure(let error):
                 print("Failed to get convos \(error)")
+                self?.tableView.isHidden = true
+                self?.noConversationsLabel.isHidden = false
             }
         }
-        
     }
     
     private func validateAuth() {
@@ -105,10 +112,6 @@ extension ConversationsViewController {
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    private func fetchConversations(){
-        tableView.isHidden = false
     }
     
     private func createNewConversation(result : SearchResult) {
@@ -153,9 +156,6 @@ extension ConversationsViewController {
             } else {
                 self.createNewConversation(result: result)
             }
-            print("\(result)")
-            
-            
         }
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC,animated: true)
@@ -176,24 +176,14 @@ extension ConversationsViewController : UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         tableView.deselectRow(at: indexPath, animated: true)
+        
         let model = conversations[indexPath.row]
-        openConversation(model)
         
         let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
         vc.title =  model.otherUserEmail
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func openConversation(_ model: Conversation){
-        
-//        let vc = ChatViewController(with: model.otherUserEmail,id: model.id)
-//        vc.title = model.name
-//        vc.navigationItem.largeTitleDisplayMode = .never
-//        navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -202,21 +192,21 @@ extension ConversationsViewController : UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
-       }
+    }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
-            
             let conversationId = conversations[indexPath.row].id
             tableView.beginUpdates()
-            DatabaseManager.shared.deleteConversation(conversationId: conversationId) { [weak self] success in
-                if success{
-                    self?.conversations.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .left)
+            conversations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            
+            DatabaseManager.shared.deleteConversation(conversationId: conversationId) { success in
+                if !success {
+                    print("failed to delete")
                 }
             }
             tableView.endUpdates()
-            
         }
     }
 }

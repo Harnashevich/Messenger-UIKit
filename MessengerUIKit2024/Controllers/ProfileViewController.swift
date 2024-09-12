@@ -9,9 +9,9 @@ import UIKit
 import FirebaseAuth
 import SDWebImage
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     
-    @IBOutlet var tableView : UITableView!
+    @IBOutlet var tableView: UITableView!
     
     var data = [ProfileViewModel]()
     
@@ -23,33 +23,28 @@ class ProfileViewController: UIViewController {
         data.append(ProfileViewModel(viewModelType: .info, title: "Email : \(UserDefaults.standard.value(forKey: "email") as? String ?? "No Email")", handler: nil))
         data.append(ProfileViewModel(viewModelType: .logout, title: "Log out", handler: { [weak self]  in
             
-            guard let strongSelf = self else {
-                return
-            }
-            
+            guard let self else { return }
             let actionsheet = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-            
             actionsheet.addAction(UIAlertAction(title: "Log out", style: .destructive) { [weak self] _ in
+                guard let self else { return }
+                UserDefaults.standard.setValue(nil, forKey: "email")
+                UserDefaults.standard.setValue(nil, forKey: "name")
                 
-                guard let strongSelf = self else {
-                    return
-                }
                 do{
                     try FirebaseAuth.Auth.auth().signOut()
                     
                     let vc = LoginViewController()
                     let nav = UINavigationController(rootViewController: vc)
                     nav.modalPresentationStyle = .fullScreen
-                    strongSelf.present(nav,animated: true)
+                    self.present(nav,animated: true)
                     
                 }catch{
                     print(error)
                 }
-                
             })
             
             actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            strongSelf.present(actionsheet,animated: true)
+            self.present(actionsheet,animated: true)
         }))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.dataSource = self
@@ -80,11 +75,9 @@ class ProfileViewController: UIViewController {
         headerView.addSubview(imageView)
         
         StorageManager.shared.downloadURL(for: path) { result in
-            
             switch result{
             case .success(let url):
                 imageView.sd_setImage(with: url, completed: nil)
-                
             case .failure(let error):
                 print("failed to get download url : \(error)")
             }

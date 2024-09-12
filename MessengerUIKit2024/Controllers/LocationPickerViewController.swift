@@ -9,7 +9,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class LocationPickerViewController: UIViewController {
+final class LocationPickerViewController: UIViewController {
     
     public var completion : ((CLLocationCoordinate2D) -> Void)?
     private var  coordinates : CLLocationCoordinate2D?
@@ -17,7 +17,6 @@ class LocationPickerViewController: UIViewController {
     
     private let map : MKMapView = {
         let map = MKMapView()
-        
         return map
     }()
     
@@ -45,9 +44,7 @@ class LocationPickerViewController: UIViewController {
             gesture.numberOfTapsRequired = 1
             map.addGestureRecognizer(gesture)
         } else {
-            guard let coordinates = self.coordinates else {
-                return
-            }
+            guard let coordinates else { return }
             let pin = MKPointAnnotation()
             pin.coordinate = coordinates
             map.addAnnotation(pin)
@@ -59,11 +56,9 @@ class LocationPickerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         map.frame = view.bounds
     }
-
+    
     @objc func didTapSendLocation(){
-        guard let coordinates = self.coordinates else {
-            return
-        }
+        guard let coordinates else { return }
         navigationController?.popViewController(animated: true)
         completion?(coordinates)
     }

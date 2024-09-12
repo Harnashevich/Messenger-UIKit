@@ -8,13 +8,13 @@
 import UIKit
 import JGProgressHUD
 
-class NewConversationsViewController: UIViewController {
+final class NewConversationsViewController: UIViewController {
     
     public var completion: ((SearchResult) -> Void)?
     
     private let spinner = JGProgressHUD(style: .dark)
     
-    private var users = [[String : String]]()
+    private var users = [[String: String]]()
     private var results = [SearchResult]()
     private var hasFetched = false
     
@@ -68,7 +68,7 @@ class NewConversationsViewController: UIViewController {
     }
 }
 
-extension NewConversationsViewController : UISearchBarDelegate {
+extension NewConversationsViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text , !text.replacingOccurrences(of: " ", with: "").isEmpty else {
@@ -81,32 +81,28 @@ extension NewConversationsViewController : UISearchBarDelegate {
         
         spinner.show(in: view)
         self.searchUsers(query: text)
-        
     }
     
-    func searchUsers(query : String) {
+    func searchUsers(query: String) {
         if hasFetched{
             filterUsers(with: query)
         } else {
-            
             //fetch + filter
-            
-            DatabaseManager.shared.getAllUsers(completion: {[weak self] result in
-                
+            DatabaseManager.shared.getAllUsers() { [weak self] result in
+                guard let self else { return }
                 switch result {
                 case .success(let usersCollection):
-                    self?.hasFetched = true
-                    self?.users = usersCollection
-                    self?.filterUsers(with: query)
+                    self.hasFetched = true
+                    self.users = usersCollection
+                    self.filterUsers(with: query)
                 case .failure(let error):
                     print("failed to get user \(error)")
                 }
-                
-            })
+            }
         }
     }
     
-    func filterUsers (with term : String){
+    func filterUsers(with term: String){
         guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String, hasFetched else {
             return
         }
@@ -130,9 +126,7 @@ extension NewConversationsViewController : UISearchBarDelegate {
         })
         
         self.results = results
-        
         updateUI()
-        
     }
     
     func updateUI(){

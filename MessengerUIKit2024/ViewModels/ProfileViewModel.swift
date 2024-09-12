@@ -8,11 +8,11 @@
 import Foundation
 
 struct ProfileViewModel {
-    let viewModelType : ProfileViewModelType
-    let title : String
-    let handler : (() -> Void)?
+    let viewModelType: ProfileViewModelType
+    let title: String
+    let handler: (() -> Void)?
 }
 
 enum ProfileViewModelType {
-    case info , logout
+    case info, logout
 }

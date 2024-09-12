@@ -46,7 +46,7 @@ extension MessageKind {
 struct Sender: SenderType {
     public var senderId: String
     public var displayName: String
-    public var photoURL : String
+    public var photoURL: String
     
 }
 struct  Media : MediaItem {
@@ -56,7 +56,7 @@ struct  Media : MediaItem {
     var size: CGSize
 }
 
-struct Location : LocationItem{
+struct Location: LocationItem{
     var location: CLLocation
     var size: CGSize
 }
