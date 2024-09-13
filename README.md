@@ -21,5 +21,6 @@ The project is based on the iOS Academy course.
 • UIKit (programmatically)<br />
 • Firebase storage and authentication<br />
 • CoreLocation<br />
+• MessageKit<br />
 
 <img src="https://github.com/user-attachments/assets/b149f87b-e5f3-4c68-81a5-54c0e59cab9e" width="500" height="1625">
