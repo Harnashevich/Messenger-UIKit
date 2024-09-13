@@ -22,4 +22,4 @@ The project is based on the iOS Academy course.
 • AVFoundation<br />
 • URLSession<br />
 
-![MyCollages](https://github.com/user-attachments/assets/2612fe35-cfe2-4d1f-bac9-de0a1dcd11c0)
+![Frame 4](https://github.com/user-attachments/assets/0a04d0bc-3283-4064-ad26-83a63fc9b1e6)
